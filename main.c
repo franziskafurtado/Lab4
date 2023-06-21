@@ -39,6 +39,7 @@ int main(void){
 	timer_init();
 	
 	while(1){
+			comando = leUART();
 			if(comando=='h'||comando=='a'){
 			sentido = comando;
 			if(sentido=='h'){
