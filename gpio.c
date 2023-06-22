@@ -9,8 +9,9 @@
 void timer_init(void);
 void SysTick_Wait1ms(uint32_t delay);
 
-extern char velocidade, comando;
+extern char comando;
 extern uint8_t sentido;
+extern uint8_t changed;
 uint32_t potIter;
 
 void GPIO_Init(void){
@@ -141,11 +142,31 @@ uint32_t lePot(void){
 
 void Timer2A_Handler(void){
 	float vel;
+	float temp;
 	char charAux[] = "x\0";
 	uint32_t aux;
 	TIMER2_ICR_R = 0x1;
 	
 		vel = (float)(((float)lePot()*10.0)/4096.0);
+		if (changed==1){
+			temp = vel;
+
+			while(vel > 0){
+	    vel = vel-1;
+			SysTick_Wait1ms(50);
+			}
+			
+			if(vel <= 0){
+				while (vel >= temp) {
+					vel = vel+1;	
+				}		
+			
+			vel=temp;
+			changed=0;
+			SysTick_Wait1ms(50);
+      }
+		}
+	
 		potIter++;
 		if(potIter%2000==0){
 			potIter = 0;
